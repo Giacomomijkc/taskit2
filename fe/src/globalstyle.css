@@ -1,0 +1,24 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik+Mono+One&family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+input[type="file"] {
+  display: none;
+}
+.custom-file-upload {
+  border: 1px solid white;
+  border-radius: 20px;
+  background-color: white;
+  color: hsla(0, 0%, 65%, 1);
+  display: inline-block;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.custom-loader {
+    width:25px;
+    height:25px;
+    border-radius:50%;
+    background:conic-gradient(#0000 10%,greenyellow);
+    -webkit-mask:radial-gradient(farthest-side,#0000 calc(100% - 4px),#000 0);
+    animation:s3 1s infinite linear;
+  }
+  @keyframes s3 {to{transform: rotate(1turn)}}
