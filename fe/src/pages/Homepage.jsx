@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import SignUpModal from '../components/SignUpModal';
+import axios from 'axios';
+import { gapi } from 'gapi-script';
 
 const Homepage = () => {
   const dynamicWords = ['notes', 'tasks', 'lists', 'goals', 'ideas'];
@@ -18,6 +20,42 @@ const Homepage = () => {
 
   const handlLogOut = () => {
     localStorage.removeItem('userLoggedIn')
+  }
+
+  const handleSignupGoogle =  () => {
+    window.location.href = `${process.env.REACT_APP_SERVER_BASE_URL}auth/google`;
+  }
+
+  const initGoogleSignIn = () => {
+    gapi.load('auth2', function() {
+      const auth2 = gapi.auth2.init({
+        client_id: '642460364954-asl4m355fbd84olo9id0qeriv6t919eo.apps.googleusercontent.com'
+      });
+      auth2.signIn()
+      .then(googleUser => {
+          if (auth2.isSignedIn.get()) {
+            const idToken = googleUser.getAuthResponse().id_token;
+            const tokenObject = {
+              token: idToken
+            }
+            console.log(tokenObject)
+            axios.post('http://localhost:5050/users/google', tokenObject)
+              .then(response => {
+                // Gestisci la risposta del server
+                console.log(response.data);
+              })
+              .catch(error => {
+                // Gestisci l'errore
+                console.log(error);
+              });
+          } else {
+            console.error('Errore durante l\'accesso a Google');
+          }
+        })
+        .catch(error => {
+          console.error('Errore durante l\'autenticazione Google', error);
+        });
+      });
   }
 
   return (
@@ -46,9 +84,21 @@ const Homepage = () => {
             <span className='font-primary text-5xl font-weight: 900 py-2 sm:text-8xl'>{dynamicWords[currentIndex]}</span> 
           </div>
           <div className='flex justify-center'>
-            <button className='font-secondary font-weight: 400 bg-indigo-950 rounded-3xl text-white w-24 text-center p-2'
+            <button className='font-secondary bg-indigo-950 rounded-3xl text-white w-24 text-center p-2'
             onClick={() => setShowSingUpModal(true)}>Signup</button>
           </div>
+          <button
+            onClick={handleSignupGoogle}
+            className='font-secondary font-normal bg-indigo-950 rounded-3xl text-white w-46 text-center p-2 my-2'
+            >
+              Google Access
+          </button>
+          <button
+            onClick={initGoogleSignIn}
+            className='font-secondary font-normal bg-indigo-950 rounded-3xl text-white w-46 text-center p-2 my-2'
+            >
+              Google Access2
+          </button>
         </div>
         {showSingUpModal && (
           <SignUpModal closeModal={() => setShowSingUpModal(false)} />

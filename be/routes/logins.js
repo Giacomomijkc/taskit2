@@ -24,6 +24,13 @@ login.post('/login', async (req,res) => {
         });
     }
 
+    if(!user.verified){
+        return res.status(403).send({
+            statusCode: 403,
+            message: 'Email not verified'
+        });
+    }
+
     const token = jwt.sign({
         _id: user._id
     }, process.env.JWT_SECRET, { expiresIn: '24h' });

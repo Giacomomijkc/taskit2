@@ -1,13 +1,12 @@
-import React from 'react'
-import {Link} from 'react-router-dom'
+import React from 'react';
+import {Link} from 'react-router-dom';
+import NavigationBar from '../components/NavigationBar';
 
 const Dashboard = () => {
+
   return (
     <>
-    <div>Dashboard</div>
-    <Link to="/testpage" className='no-underline'>
-        <button>Go to Test Page</button>
-    </Link>
+    <NavigationBar/>
     </>
   )
 }

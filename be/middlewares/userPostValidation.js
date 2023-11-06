@@ -12,11 +12,11 @@ const userBodyParams = [
         .isEmail()
         .withMessage('Email is required and must be a valid email'),
 
-    body('password')
+    /*body('password')
         .notEmpty()
         .isString()
         .isLength({min:7})
-        .withMessage('Password is required, min 7 characters'),
+        .withMessage('Password is required, min 7 characters'),*/
 
     body('avatar')
         .notEmpty()

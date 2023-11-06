@@ -16,7 +16,8 @@ const oauth2Client = new OAuth2(
       user: 'gcasolo.csisrls@gmail.com',
       clientId: process.env.CLIENT_ID_GOOGLE,
       clientSecret: process.env.CLIENT_SECRET_GOOGLE,
-      refreshToken: process.env.REFRESH_TOKEN_GOOGLE
+      refreshToken: process.env.REFRESH_TOKEN_GOOGLE,
+      accessToken: process.env.ACCESS_TOKEN_GOOGLE
     },
   });
 

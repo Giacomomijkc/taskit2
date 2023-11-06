@@ -22,6 +22,8 @@ const SignUpModal = ({ closeModal }) => {
     const coverInputRef = useRef(null);
     const isUploadLoading = useSelector((state) => state.users.isUploadLoading);
 
+    const signUpMethod = "local";
+
     const handleInputChange = (e) => {
       const { name, value } = e.target;
           setFormData({
@@ -52,6 +54,7 @@ const SignUpModal = ({ closeModal }) => {
       const userData = {
           ...formData,
           avatar: avatarURL,
+          method: signUpMethod
       };
   
       try {

@@ -7,6 +7,7 @@ export const login = createAsyncThunk('logins/login', async(loginData, {rejectWi
     try {
         const response = await axios.post(apiUrlLogin, loginData);
         const {data} = response;
+        console.log(data)
         localStorage.setItem('userLoggedIn', JSON.stringify(data.token));
         return data
     } catch (error) {
