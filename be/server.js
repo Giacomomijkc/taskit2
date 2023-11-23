@@ -8,6 +8,7 @@ require('dotenv').config();
 const usersRoute = require('./routes/users');
 const loginRoute = require('./routes/logins');
 const googleRoute = require('./routes/googleRoute');
+const taskRoute = require('./routes/tasks');
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use('/', usersRoute)
 app.use('/', loginRoute)
 app.use('/', googleRoute)
+app.use('/', taskRoute)
 
 mongoose.connect(process.env.MONGO_DB_URL);
 

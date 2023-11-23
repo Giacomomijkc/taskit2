@@ -17,6 +17,15 @@ const TaskModelSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    deadLine:{
+        type: Date,
+        required: false
+    },
+    urgency:{
+        type: String,
+        enum: ["low", "mid", "high", "extreme"],
+        required: true
+    },
     completed:{
         type: Boolean,
         default: false

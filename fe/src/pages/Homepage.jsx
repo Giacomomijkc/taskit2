@@ -26,7 +26,7 @@ const Homepage = () => {
     window.location.href = `${process.env.REACT_APP_SERVER_BASE_URL}auth/google`;
   }
 
-  const initGoogleSignIn = () => {
+  /*const initGoogleSignIn = () => {
     gapi.load('auth2', function() {
       const auth2 = gapi.auth2.init({
         client_id: '642460364954-asl4m355fbd84olo9id0qeriv6t919eo.apps.googleusercontent.com'
@@ -56,7 +56,7 @@ const Homepage = () => {
           console.error('Errore durante l\'autenticazione Google', error);
         });
       });
-  }
+  }*/
 
   return (
       <div className="flex flex-col justify-between h-screen">
@@ -68,7 +68,7 @@ const Homepage = () => {
                 <li className="font-secondary font-weight: 400 bg-indigo-950 rounded-3xl text-white w-24 text-center p-2 m-1">Login</li>
               </Link>
             ):(
-              <li onClick={handlLogOut} className="font-secondary font-weight: 400 bg-indigo-950 rounded-3xl text-white w-24 text-center p-2 m-1">Logout</li>
+              <li onClick={handlLogOut} className="cursor-pointer font-secondary font-weight: 400 bg-indigo-950 rounded-3xl text-white w-24 text-center p-2 m-1">Logout</li>
             )
             }
             {isToken &&
@@ -93,12 +93,16 @@ const Homepage = () => {
             >
               Google Access
           </button>
-          <button
+          {/*
+
+            <button
             onClick={initGoogleSignIn}
             className='font-secondary font-normal bg-indigo-950 rounded-3xl text-white w-46 text-center p-2 my-2'
             >
               Google Access2
-          </button>
+            </button>
+          */}
+          
         </div>
         {showSingUpModal && (
           <SignUpModal closeModal={() => setShowSingUpModal(false)} />
