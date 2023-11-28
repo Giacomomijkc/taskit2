@@ -1,6 +1,28 @@
-import React from 'react'
+import React, {useState} from 'react';
+import { useSelector } from 'react-redux/es/hooks/useSelector';
+import { deleteTask } from '../redux/tasksSlice';
+import { useDispatch } from 'react-redux';
+import { useSpring, animated } from 'react-spring';
+import { gsap } from 'gsap';
 
-const Task = ({title, content, category, urgency, deadline, createdAt, complete}) => {
+
+const Task = ({title, content, category, urgency, deadline, createdAt, complete, _id, refreshTasks}) => {
+
+    const dispatch = useDispatch();
+    const userId = useSelector((state)=> state.users.userLogged.user._id);
+
+    const [isBurning, setIsBurning] = useState(false);
+
+    const burnTask = async() =>{
+      setIsBurning(true);
+      setTimeout(async () => {
+        await dispatch(deleteTask(_id));
+        refreshTasks();
+        setIsBurning(false);
+      }, 2000);
+    }
+
+    const taskClasses = isBurning ? 'fire-effect' : ''; 
 
     const getUrgencyColor = (urgency) => {
         switch (urgency) {
@@ -19,7 +41,7 @@ const Task = ({title, content, category, urgency, deadline, createdAt, complete}
 
   return (
     <>
-    <div className="max-w-sm rounded-xl border border-indigo-950 font-secondary shadow-md">
+    <div className={`${taskClasses} max-w-sm rounded-xl border border-indigo-950 font-secondary shadow-md`}>
       <div className="p-5 bg-indigo-950 rounded-t-lg">
         <h5 className="text-lg tracking-tight text-white font-primary text-center">{title}</h5>
       </div>
@@ -40,6 +62,10 @@ const Task = ({title, content, category, urgency, deadline, createdAt, complete}
             <p className="text-xs text-indigo-950">Status: completed ✅</p>
             )
         }
+        <div className='flex flex-row justify-between'>
+          <button>✅</button>
+          <button onClick={burnTask}>🔥</button>
+        </div>
       </div>
     </div>
     </>

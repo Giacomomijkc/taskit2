@@ -153,6 +153,84 @@ task.get('/tasks', verifyToken, async (req, res) =>{
     }
 })
 
+/*task.post('/tasks/create', verifyToken, async (req, res) =>{
+    try {
+        const authorId = req.user._id;
+
+        existingAuthor = await UserModel.findById(authorId);
+
+        if(!existingAuthor){
+            return res.status(400).send({
+                statusCode: 400,
+                message: "author not found"
+            })
+        }
+        const {author, title, content, category, deadLine, urgency, completed} = req.body
+        const newTask = new TaskModel({
+            author: authorId,
+            title,
+            content,
+            category,
+            deadLine,
+            urgency,
+            completed: false
+        })
+
+        const task = await TaskModel.save(newTask);
+
+        res.status(200).send({
+            statusCode: 200,
+            message: 'new Task successfully created',
+            task
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            statusCode: 500,
+            message:'Internal Server Error'
+        })
+    }
+})*/
+
+task.delete('/tasks/delete/:taskId', verifyToken, async (req, res) =>{
+    try {
+        const authorId = req.user._id;
+        const {taskId} = req.params
+
+        existingAuthor = await UserModel.findById(authorId);
+
+        if(!existingAuthor){
+            return res.status(400).send({
+                statusCode: 400,
+                message: "author not found"
+            })
+        }
+
+        existingTask = await TaskModel.findById(taskId);
+
+        if(!existingTask){
+            return res.status(400).send({
+                statusCode: 400,
+                message: "task not found"
+            })
+        }
+
+        await TaskModel.findByIdAndDelete(taskId);
+
+        res.status(200).send({
+            statusCode: 200,
+            message: 'task succesfully deleted'
+        })
+
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            statusCode: 500,
+            message:'Internal Server Error'
+        })
+    }
+})
+
 
 
 module.exports = task;

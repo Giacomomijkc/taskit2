@@ -22,3 +22,53 @@ input[type="file"] {
     animation:s3 1s infinite linear;
   }
   @keyframes s3 {to{transform: rotate(1turn)}}
+
+/*  @keyframes burnEffect {
+    0%, 20% {
+      opacity: 1;
+      background-color: #f5f5f5;
+      color: black;
+      filter: blur(0px) brightness(100%);
+    }
+    40%, 60% {
+      background-color: #ffa500;
+      color: #800000;
+      filter: blur(2px) brightness(150%);
+    }
+    80%, 100% {
+      background-color: #ff4500;
+      color: #ff0000;
+      filter: blur(5px) brightness(200%);
+      opacity: 0;
+    }
+  }
+  
+  .burn {
+    animation: burnEffect 3s ease-in-out forwards;
+  }*/
+
+  @keyframes burn {
+    from {
+     box-shadow: 0 0 4px #FF6D00, 0 -5px 4px #FF8C00, 2px -10px 6px #FFA500;
+     border-color: #333;
+     text-shadow: 0 0 4px #FF6D00, 0 -5px 4px #FF8C00, 2px -10px 6px #FFA500;
+     color: #333;
+    }
+    to {
+     box-shadow: 0 0 10px #FFD700, 0 0 20px #FFD700, 0 0 30px #FFD700, 0 0 40px #FF4500;
+     border-color: #fff;
+     text-shadow: 0 0 10px #FFD700, 0 0 20px #FFD700, 0 0 30px #FFD700, 0 0 40px #FF4500;
+     color: #fff;
+    }
+   }
+   
+   .fire-effect {
+    animation: burn 2s infinite alternate;
+   }
+   
+  
+  
+  
+  
+  
+

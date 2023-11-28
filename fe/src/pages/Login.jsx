@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import { login } from '../redux/loginsSlice';
-import { UseSelector, useSelector } from 'react-redux/es/hooks/useSelector';
+import { useSelector } from 'react-redux/es/hooks/useSelector';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 

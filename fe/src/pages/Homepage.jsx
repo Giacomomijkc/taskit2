@@ -65,7 +65,7 @@ const Homepage = () => {
           <div>
             {!isToken ?(
               <Link to="/login" className='no-underline'>
-                <li className="font-secondary font-weight: 400 bg-indigo-950 rounded-3xl text-white w-24 text-center p-2 m-1">Login</li>
+                <li className="font-secondary  bg-indigo-950 rounded-3xl text-white w-24 text-center p-2 m-1">Login</li>
               </Link>
             ):(
               <li onClick={handlLogOut} className="cursor-pointer font-secondary font-weight: 400 bg-indigo-950 rounded-3xl text-white w-24 text-center p-2 m-1">Logout</li>
@@ -73,7 +73,7 @@ const Homepage = () => {
             }
             {isToken &&
               <Link to="/dashboard" className='no-underline'>
-                <li className="font-secondary font-weight: 400 bg-indigo-950 rounded-3xl text-white w-24 text-center p-2 m-1">Dashboard</li>
+                <li className="font-secondary bg-indigo-950 rounded-3xl text-white w-24 text-center p-2 m-1">Dashboard</li>
               </Link>
             }
           </div>
@@ -81,7 +81,7 @@ const Homepage = () => {
         <div className='flex flex-col justify-center items-center h-screen m-auto '>
           <div className="flex flex-col items-center md:flex md:flex-row md:justify-content md:items-center">
             <span className='font-secondary text-1xl font-weight: 600 py-2 sm:text-3xl '>USE IT FOR YOUR </span>
-            <span className='font-primary text-5xl font-weight: 900 py-2 sm:text-8xl'>{dynamicWords[currentIndex]}</span> 
+            <span className='font-primary text-5xl py-2 sm:text-8xl'>{dynamicWords[currentIndex]}</span> 
           </div>
           <div className='flex justify-center'>
             <button className='font-secondary bg-indigo-950 rounded-3xl text-white w-24 text-center p-2'
