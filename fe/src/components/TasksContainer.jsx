@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchTasks } from '../redux/tasksSlice';
 import Task from './Task';
 import TaskModal from './TaskModal';
+import TaskModalAi from './TaskModalAi';
 
 const TasksContainer = () => {
   const dispatch = useDispatch();
@@ -43,9 +44,14 @@ const TasksContainer = () => {
   };
 
   const [showModal, setShowModal] = useState(false);
+  const [showModalAi, setShowModalAi] = useState(false);
 
   const toggleModal = () => {
     setShowModal(!showModal);
+  };
+
+  const toggleModalAi = () => {
+    setShowModalAi(!showModalAi);
   };
 
   const refreshTasks = () => {
@@ -81,7 +87,7 @@ const TasksContainer = () => {
       </div>
 
       {/* Qui puoi inserire i controlli di paginazione */}
-      <div className='flex flex-row justify-between items-center mt-2'>
+      <div className='flex flex-row justify-center items-center mt-2'>
         <button className='font-secondary text-sm bg-indigo-950 rounded-3xl text-white w-24 text-center p-2 m-1' onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>Previous</button>
         <span className='font-secondary text-xl text-indigo-950'>Page {page}</span>
         <button className='font-secondary text-sm bg-indigo-950 rounded-3xl text-white w-24 text-center p-2 m-1' onClick={() => handlePageChange(page + 1)}>Next</button>
@@ -91,8 +97,14 @@ const TasksContainer = () => {
       className="font-secondary text-sm fixed bottom-4 right-4 bg-indigo-950 text-white p-3 rounded-full shadow-lg hover:bg-indigo-700 w-28">
       Add Task
       </button>
+      <button 
+      onClick={toggleModalAi}
+      className="font-secondary text-sm fixed bottom-4 left-4 bg-indigo-950 text-white p-3 rounded-full shadow-lg hover:bg-indigo-700 w-28">
+      Add with AI
+      </button>
 
       {showModal && <TaskModal toggleModal={toggleModal} showModal={showModal} refreshTasks={refreshTasks} />}
+      {showModalAi && <TaskModalAi toggleModalAi={toggleModalAi} showModalAi={showModalAi} refreshTasks={refreshTasks} />}
 
     </div>
     

@@ -48,8 +48,23 @@ export const createTask = createAsyncThunk('tasks/createTask', async(taskData)=>
         return response.data
     } catch (error) {
         console.log(error)
-        console.error('Error fetching tasks', error);
-        throw new Error('Error fetching tasks');
+        console.error('Error creating task', error);
+        throw new Error('Error creating task');
+    }
+})
+
+export const createTaskAi = createAsyncThunk('tasks/createTaskAi', async(taskData)=>{
+    try {
+        const token = JSON.parse(localStorage.getItem("userLoggedIn"));
+        const response = await axios.post(`${apiUrlTasks}/create/ai`, taskData, {
+            headers: { 'Authorization': `${token}` }
+        });
+        console.log(response);
+        return response.data
+    } catch (error) {
+        console.log(error)
+        console.error('Error creating task', error);
+        throw new Error('Error creating task');
     }
 })
 
@@ -64,8 +79,24 @@ export const deleteTask = createAsyncThunk('tasks/deleteTask', async(taskId)=>{
     } catch (error) {
         //gestire renderizzazione errori
         console.log(error)
-        console.error('Error fetching tasks', error);
-        throw new Error('Error fetching tasks');
+        console.error('Error deleting task', error);
+        throw new Error('Error deleting task');
+    }
+})
+
+export const completeTask = createAsyncThunk('tasks/completeTask', async(taskId)=>{
+    try {
+        const token = JSON.parse(localStorage.getItem("userLoggedIn"));
+        const response = await axios.patch(`${apiUrlTasks}/complete/${taskId}`, {}, {
+            headers: { 'Authorization': `${token}` }
+        });
+        console.log(response);
+        return response.data
+    } catch (error) {
+        //gestire renderizzazione errori
+        console.log(error)
+        console.error('Error deleting task', error);
+        throw new Error('Error deleting task');
     }
 })
 
@@ -79,10 +110,17 @@ const tasksSlice = createSlice({
         errorNewTask: null,
         loadingNewTask: true,
         successMessageNewTask: null,
+        errorNewTaskAi: null,
+        loadingNewTaskAi: true,
+        successMessageNewTaskAi: null,
         loadingDeleteTask: true,
         taskDeleted: null,
         successMessageDeleteTask: null,
-        errorMessageDeleteTask: null
+        errorMessageDeleteTask: null,
+        completingTaskLoading: true,
+        errorMessageCompleteTask: null,
+        successMessageCompleteTask: null,
+        completeTask: null
     }, reducers:{
     }, extraReducers: (builder) => {
         builder
@@ -109,6 +147,18 @@ const tasksSlice = createSlice({
             state.loadingNewTask = false;
             state.successMessageNewTask = action.payload.message
         })
+        .addCase(createTaskAi.pending, (state, action) =>{
+            state.loadingNewTaskAi = true;
+        })
+        .addCase(createTaskAi.rejected, (state, action) =>{
+            state.errorNewTaskAi = action.payload;
+            state.loadingNewTaskAi = false
+        })
+        .addCase(createTaskAi.fulfilled, (state, action) =>{
+            state.task = action.payload;
+            state.loadingNewTaskAi = false;
+            state.successMessageNewTaskAi = action.payload.message
+        })
         .addCase(deleteTask.pending, (state, action)=>{
             state.loadingDeleteTask = true;
         })
@@ -120,6 +170,18 @@ const tasksSlice = createSlice({
             state.deleteTask = action.payload;
             state.loadingDeleteTask = false;
             state.successMessageDeleteTask = action.payload.message
+        })
+        .addCase(completeTask.pending, (state, action)=>{
+            state.completingTaskLoading = true;
+        })
+        .addCase(completeTask.rejected, (state, action) =>{
+            state.completingTaskLoading = false;
+            state.errorMessageCompleteTask = action.payload;
+        })
+        .addCase(completeTask.fulfilled, (state, action) =>{
+            state.completeTask = action.payload;
+            state.completingTaskLoading = false;
+            state.successMessageCompleteTask = action.payload.message
         })
     }
 })

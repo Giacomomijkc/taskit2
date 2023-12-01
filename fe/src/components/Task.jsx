@@ -1,12 +1,12 @@
 import React, {useState} from 'react';
 import { useSelector } from 'react-redux/es/hooks/useSelector';
-import { deleteTask } from '../redux/tasksSlice';
+import { deleteTask, completeTask } from '../redux/tasksSlice';
 import { useDispatch } from 'react-redux';
 import { useSpring, animated } from 'react-spring';
 import { gsap } from 'gsap';
 
 
-const Task = ({title, content, category, urgency, deadline, createdAt, complete, _id, refreshTasks}) => {
+const Task = ({title, content, category, urgency, deadline, createdAt, completed, _id, refreshTasks}) => {
 
     const dispatch = useDispatch();
     const userId = useSelector((state)=> state.users.userLogged.user._id);
@@ -20,6 +20,11 @@ const Task = ({title, content, category, urgency, deadline, createdAt, complete,
         refreshTasks();
         setIsBurning(false);
       }, 2000);
+    }
+
+    const makeTaskComplete = async() =>{
+      await dispatch(completeTask(_id));
+      refreshTasks();
     }
 
     const taskClasses = isBurning ? 'fire-effect' : ''; 
@@ -56,15 +61,19 @@ const Task = ({title, content, category, urgency, deadline, createdAt, complete,
         <p className="text-sm text-indigo-950">Deadline: {deadline}</p>
         }
         <p className="mt-2 text-xs text-indigo-950">Created on: {createdAt}</p>
-        {!complete ? (
+        {!completed ? (
             <p className="text-xs text-indigo-950">Status: pending</p> 
             ) :(
-            <p className="text-xs text-indigo-950">Status: completed ✅</p>
+            <p className="text-xs text-indigo-950">Status: ✅</p>
             )
         }
         <div className='flex flex-row justify-between'>
-          <button>✅</button>
+        {completed ? (
           <button onClick={burnTask}>🔥</button>
+          ) : (
+          <button onClick={makeTaskComplete}>✅</button>
+          )
+        }
         </div>
       </div>
     </div>

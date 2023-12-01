@@ -3,6 +3,11 @@ const express = require('express');
 const verifyToken = require('../middlewares/verifyToken');
 const transporter = require('../config/emailConfig');
 const jwt = require('jsonwebtoken');
+const OpenAI = require('openai');
+
+const openai = new OpenAI({
+    apiKey: process.env.OPEN_AI_API_SECRET
+});
 
 const UserModel = require('../models/UserModel')
 const TaskModel = require('../models/TaskModel')
@@ -192,6 +197,57 @@ task.get('/tasks', verifyToken, async (req, res) =>{
     }
 })*/
 
+task.patch('/tasks/complete/:taskId', verifyToken, async (req, res) =>{
+    try {
+        const authorId = req.user._id;
+        const {taskId} = req.params
+
+        existingAuthor = await UserModel.findById(authorId);
+
+        if(!existingAuthor){
+            return res.status(400).send({
+                statusCode: 400,
+                message: "author not found"
+            })
+        }
+
+        existingTask = await TaskModel.findById(taskId);
+
+        if(!existingTask){
+            return res.status(400).send({
+                statusCode: 400,
+                message: "task not found"
+            })
+        }
+
+        if(existingTask.completed){
+            return res.status(400).send({
+                statusCode: 400,
+                message: "you can't complete an already completed task"
+            })
+        }
+
+        dataToUpdate = {
+            completed: true
+        }
+        options = {new: true}
+
+        const completedTask = await TaskModel.findByIdAndUpdate(taskId, dataToUpdate, options)
+
+        res.status(201).send({
+            statusCode: 200,
+            message: `Task with id ${existingTask._id} successfully completed`,
+            completedTask
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            statusCode: 500,
+            message:'Internal Server Error'
+        })
+    }
+})
+
 task.delete('/tasks/delete/:taskId', verifyToken, async (req, res) =>{
     try {
         const authorId = req.user._id;
@@ -230,6 +286,208 @@ task.delete('/tasks/delete/:taskId', verifyToken, async (req, res) =>{
         })
     }
 })
+
+//post via AI di una task
+/*task.post('/tasks/create/ai', verifyToken, async (req, res) =>{
+    try {
+        const authorId = req.user._id;
+        existingAuthor = await UserModel.findById(authorId);
+        if(!existingAuthor){
+            return res.status(400).send({
+                statusCode: 400,
+                message: "author not found"
+            })
+        }
+
+        const {textTask} = req.body;
+        const allTextData = {...textTask, authorId: authorId}
+
+        getTaskPayload()
+
+        async function getTaskPayload(allTextData) {
+            if(allTextData){
+                try {
+                    const messages = [
+                        {
+                            role: 'system',
+                            content: `Sei un assistente di Taskit, 
+                                il tuo compito è trasformare il testo ricevuto in un formato json per poterlo poi usare
+                                come payload per fare una chiamata di tipo post. 
+                                Il testo ricevuto è un oggetto composto da una stringa e da una proprietà authorId.
+                                Dalla stringa di testo devi estrarre delle stringhe di valore coerente con le proprietà da riempire della struttura json
+                                e usare la stringa della proprietà authorId ricevuta per popolare la proprietà author del json.
+                                Questa è la struttura json che devi resituire nel tuo message:
+                                {
+                                "title": //inserire una parole appropriata in base al testo ricevuto
+                                "content": //inserire una parole appropriata in base al testo ricevuto
+                                "category": //inserire una parole appropriata in base al testo ricevuto
+                                "author": //inserire la stringa presente nella proprietà authorId che ricevi oltre alla stringa di testo
+                                "urgency": //inserire una parole appropriata in base al testo ricevuto
+                                "completed": //inserire il valore false
+                                }`
+                        },
+                        {
+                            role: 'user',
+                            content: `${taskData}`
+                        }
+                    ];
+                
+                    const openaAiresponse = await openai.chat.completions.create({
+                        model: 'gpt-4',
+                        messages: messages
+                    });
+
+                    console.log(openaAiresponse.choices[0].message);
+
+                    const {payload} = openaAiresponse.choices[0].message
+                    
+                    try {
+                        const {title, content, author, category, completed, deadLine, urgency} = payload;
+
+                        existingUser = await UserModel.findById(author);
+
+                        if(!existingUser){
+                            return res.status(400).send({
+                                statusCode: 400,
+                                message: "user not found"
+                            })
+                        }
+
+                        const newTask = new TaskModel({
+                            title,
+                            content,
+                            author,
+                            category,
+                            deadLine,
+                            urgency,
+                            completed: false
+                        })
+
+                        await newTask.save();
+
+                        res.status(201).send({
+                            message: "Task created successfully",
+                            task: newTask
+                        });
+                        
+                    } catch (error) {
+                        console.log(error)
+                        res.status(500).send({
+                            statusCode: 500,
+                            message: 'Internal Server Error'
+                        })
+                    }
+                    
+                } catch (error) {
+                    console.error(error);
+                }
+            } else {
+                console.log('AlltaskData non è presente')
+            }
+        }
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            statusCode: 500,
+            message: 'Internal Server Error'
+        })
+    }
+})*/
+
+// POST via AI to create a task
+task.post('/tasks/create/ai', verifyToken, async (req, res) => {
+    try {
+        const authorId = req.user._id;
+        const existingAuthor = await UserModel.findById(authorId);
+        if (!existingAuthor) {
+            return res.status(400).send({
+                statusCode: 400,
+                message: "author not found"
+            });
+        }
+
+        const { textTask } = req.body;
+
+        // Call the function to get the AI response
+        console.log(textTask, authorId)
+        const taskPayload = await getTaskPayload(textTask, authorId);
+
+        // Extract the properties from the AI-generated task data
+        const { title, content, category, urgency, deadLine } = JSON.parse(taskPayload);
+
+        const newTask = new TaskModel({
+            title,
+            content,
+            author: authorId,
+            deadLine,
+            category,
+            urgency,
+            completed: false
+        });
+
+        await newTask.save();
+
+        res.status(201).send({
+            message: "Task created successfully",
+            task: newTask
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            statusCode: 500,
+            message: 'Internal Server Error'
+        });
+    }
+});
+
+async function getTaskPayload(text, authorId) {
+    try {
+        const messages = [
+            {
+                role: 'system',
+                content: `Sei un assistente di Taskit, 
+                il tuo compito è trasformare il testo ricevuto in un formato json per poterlo poi usare
+                come payload per fare una chiamata di tipo post. 
+                Il testo ricevuto è un oggetto composto da una stringa e da una proprietà authorId.
+                Dalla stringa di testo devi estrarre delle stringhe di valore coerente con le proprietà da riempire della struttura json
+                e usare la stringa della proprietà authorId ricevuta per popolare la proprietà author del json.
+                Questa è la struttura json che devi resituire nel tuo message:
+                {
+                "title": //inserire una parola appropriata in base al testo ricevuto
+                "content": //inserire una parola appropriata in base al testo ricevuto
+                "author": //inserire la stringa presente nella proprietà authorId che ricevi oltre alla stringa di testo
+                "deadLine": //inserire una stringa in formato data solo se presente un riferimento alla scadenza nel testo altrimenti non includere la proprietà
+                "category": //inserire una parola appropriata in base al testo ricevuto
+                "urgency": //inserire una parola appropriata tra "low", "mid", "high", "extreme" in base al testo ricevuto
+                "completed": //inserire il valore false
+                }`
+            },
+            {
+                role: 'user',
+                content: `${text}, authorId: ${authorId}`
+            }
+        ];
+
+        const response = await openai.chat.completions.create({
+            model: 'gpt-4',
+            messages: messages
+        });
+
+        // Assuming the AI response contains the JSON string
+        if(response && response.choices && response.choices.length > 0 && response.choices[0] && response.choices[0].message && response.choices[0].message.content){
+            console.log(response.choices[0].message.content)
+            return response.choices[0].message.content;
+        } else {
+            console.log('no message from AI')
+        }
+
+    } catch (error) {
+        console.error('Error in AI processing:', error);
+        throw error;
+    }
+}
+
 
 
 
