@@ -6,7 +6,7 @@ import { useSpring, animated } from 'react-spring';
 import { gsap } from 'gsap';
 
 
-const Task = ({title, content, category, urgency, deadline, createdAt, completed, _id, refreshTasks}) => {
+const Task = ({title, content, category, urgency, deadLine, createdAt, completed, _id, refreshTasks}) => {
 
     const dispatch = useDispatch();
     const userId = useSelector((state)=> state.users.userLogged.user._id);
@@ -57,8 +57,8 @@ const Task = ({title, content, category, urgency, deadline, createdAt, completed
             <div className="text-sm text-indigo-950 mr-1">Urgency level</div>
             <div className={`ml-1 w-8 h-4 ${getUrgencyColor(urgency)}`} />
         </div>
-        {deadline &&
-        <p className="text-sm text-indigo-950">Deadline: {deadline}</p>
+        {deadLine &&
+        <p className="text-sm text-indigo-950">Deadline: {deadLine}</p>
         }
         <p className="mt-2 text-xs text-indigo-950">Created on: {createdAt}</p>
         {!completed ? (

@@ -457,7 +457,7 @@ async function getTaskPayload(text, authorId) {
                 "title": //inserire una parola appropriata in base al testo ricevuto
                 "content": //inserire una parola appropriata in base al testo ricevuto
                 "author": //inserire la stringa presente nella proprietà authorId che ricevi oltre alla stringa di testo
-                "deadLine": //inserire una stringa in formato data solo se presente un riferimento alla scadenza nel testo altrimenti non includere la proprietà
+                "deadLine": //inserire valore in formato ISODate("2023-12-19T14:20:00.000Z") di mongoDb solo se presente un riferimento alla scadenza nel testo altrimenti non includere la proprietà
                 "category": //inserire una parola appropriata in base al testo ricevuto
                 "urgency": //inserire una parola appropriata tra "low", "mid", "high", "extreme" in base al testo ricevuto
                 "completed": //inserire il valore false

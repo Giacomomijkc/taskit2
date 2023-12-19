@@ -1,11 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { loggedUserById } from '../redux/usersSlice';
 import { useNavigate } from 'react-router-dom';
 
 const NavigationBar = () => {
 
     const navigate = useNavigate();
     const user = useSelector((state) => state.users.userLogged?.user)
+    const userId = useSelector((state) => state.logins.userId)
+    const dispatch = useDispatch();
+
+    useEffect(()=>{
+      dispatch(loggedUserById(userId))
+    },[])
 
     //devo fare in modo che richekki la get dell'utente perché a volte se non refresho 
     //quando mi loggo "local" prende avatar precedente

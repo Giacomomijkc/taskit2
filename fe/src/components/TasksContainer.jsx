@@ -88,9 +88,9 @@ const TasksContainer = () => {
 
       {/* Qui puoi inserire i controlli di paginazione */}
       <div className='flex flex-row justify-center items-center mt-2'>
-        <button className='font-secondary text-sm bg-indigo-950 rounded-3xl text-white w-24 text-center p-2 m-1' onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>Previous</button>
-        <span className='font-secondary text-xl text-indigo-950'>Page {page}</span>
-        <button className='font-secondary text-sm bg-indigo-950 rounded-3xl text-white w-24 text-center p-2 m-1' onClick={() => handlePageChange(page + 1)}>Next</button>
+            <button className='font-secondary text-sm bg-indigo-950 rounded-3xl text-white w-24 text-center p-2 m-1' onClick={() => handlePageChange(page - 1)} disabled={page <= 1}>Previous</button>
+            <span className='font-secondary text-xl text-indigo-950'>Page {page}</span>
+            <button className='font-secondary text-sm bg-indigo-950 rounded-3xl text-white w-24 text-center p-2 m-1' onClick={() => handlePageChange(page + 1)}>Next</button>
       </div>
       <button 
       onClick={toggleModal}
